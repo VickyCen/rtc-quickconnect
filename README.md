@@ -30,6 +30,10 @@ quickconnect('https://switchboard.rtc.io/', { room: 'qc-simple-demo' })
 
 ```
 
+The first argument to quickconnect is the URL of the signalling server, the second is a set of options given as a JSON object.
+Valid options are described [below](#valid-quick-connect-options).
+
+
 ## Events
 
 The following events are emitted from the signalling object created by calling `quickconnect()`. Additionally, any of the underlying [signaller events](https://github.com/rtc-io/rtc-signaller#signaller-events) can also be used.
@@ -242,6 +246,12 @@ Listed below are some of the commonly used options:
 
 - `debug` (default: false)
 
+- `plugins` (default: '')
+
+  An optional array of rtc-plugins to add, e.g. add Temasys plugin as list
+  item `plugins = [ require('rtc-plugin-temasys')];`
+
+
 Write rtc.io suite debug output to the browser console.
 
 - `expectedLocalStreams` (default: not specified) _added 3.0_
@@ -265,8 +275,20 @@ function:
 
 - `iceServers`
 
-This provides a list of ice servers that can be used to help negotiate a
-connection between peers.
+  This provides a list of ice servers that can be used to help negotiate a
+  connection between peers.
+
+- `constraints` (default: '')
+
+  An optional RTCConstraints object that is handed to the RTCPeerConnection call, e.g.
+  `constraints: {"optional": [ {'googIPv6': 'false'} ] }`  or
+  `constraints: {"optional": [ {RtpDataChannels: true} ] }`
+
+- `sdpfilter` (default '')
+
+  An optional function to provide for sdp munging, e.g.
+  `sdpfilter: function(sdp) { console.log('filtering sdp'); return limitBandwidthSDP(sdp);}`
+
 
 #### Options for P2P negotiation
 
@@ -289,11 +311,30 @@ addStream(stream:MediaStream) => qc
 Add the stream to active calls and also save the stream so that it
 can be added to future calls.
 
+
+#### addTrack
+
+The `addTrack` function terminates do the pure WebRTC addTrack logic.
+
+
+#### replaceTrack
+
+The `replaceTrack` function call web WebRTC API for replaceTrack (sender)
+replaceTrack(newTrack, oldTrackId)
+
+
+#### endCall
+
+The `endCall` function terminates the active call with the given ID.
+If a call with the call ID does not exist it will do nothing.
+
+
 #### endCalls()
 
 The `endCalls` function terminates all the active calls that have been
 created in this quickconnect instance.  Calling `endCalls` does not
 kill the connection with the signalling server.
+
 
 #### close()
 
