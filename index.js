@@ -238,9 +238,10 @@ module.exports = function (signalhost, opts) {
 
       // Generate the connection options for the provided options and default values
       var connectionOptions = extend({
-        sdpSemantics: sdpSupport.detectTargetSemantics(signaller, data)
+        sdpSemantics: 'unified-plan'
       }, opts, { iceServers: iceServers });
 
+      console.log("====connectionOptions", connectionOptions);
       // create a peer connection
       // iceServers that have been created using genice taking precendence
       pc = rtc.createConnection(connectionOptions, (opts || {}).constraints);
