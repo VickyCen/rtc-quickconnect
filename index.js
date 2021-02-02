@@ -241,8 +241,6 @@ module.exports = function (signalhost, opts) {
         sdpSemantics: sdpSupport.detectTargetSemantics(signaller, data)
       }, opts, { iceServers: iceServers });
 
-      console.log("====connectionOptions update", connectionOptions);
-
       // create a peer connection
       // iceServers that have been created using genice taking precendence
       pc = rtc.createConnection(connectionOptions, (opts || {}).constraints);
