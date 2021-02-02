@@ -241,6 +241,8 @@ module.exports = function (signalhost, opts) {
         sdpSemantics: sdpSupport.detectTargetSemantics(signaller, data)
       }, opts, { iceServers: iceServers });
 
+      console.log("====connectionOptions update", connectionOptions);
+
       // create a peer connection
       // iceServers that have been created using genice taking precendence
       pc = rtc.createConnection(connectionOptions, (opts || {}).constraints);
@@ -268,7 +270,7 @@ module.exports = function (signalhost, opts) {
       Object.keys(channels).forEach(function (label) {
         addDataChannelToConnection(pc, id, label);
       });
-      
+
       // Watch for any datachannel creation from in-band negotiated channels
       pc.ondatachannel = function (evt) {
         var channel = evt && evt.channel;
@@ -346,14 +348,14 @@ module.exports = function (signalhost, opts) {
   function addDataChannelToConnection(pc, targetPeer, label) {
     if (!pc || !targetPeer || !label) return;
     var channelId = Object.keys(channels).indexOf(label);
-    if (channelId === -1) return console.warn('Channel ID not found');    
+    if (channelId === -1) return console.warn('Channel ID not found');
     var channelOpts = channels[label] || {};
     var negotiated = !!channelOpts.negotiated;
     // If negotiated, allow auto generation of the channel ID
     if (negotiated) {
       channelOpts = extend({ id: channelId }, channelOpts);
     }
-    
+
     // If not negotiated, we have to be the master in order to create
     if (!negotiated && !signaller.isMaster(targetPeer)) return;
 
@@ -661,7 +663,7 @@ module.exports = function (signalhost, opts) {
       var replacingStream = localStreams.find(s=>
         s.getTracks().find(t=>t === removingTrack));
 
-      // removing 
+      // removing
       replacingStream.removeTrack(removingTrack);
 
       // add new track
@@ -671,7 +673,7 @@ module.exports = function (signalhost, opts) {
       console.error('cannot find the track to be replaced:', trackId, track);
       return;
     }
-    
+
 
     // replace pc track
     calls.values().forEach(function(call) {
@@ -689,7 +691,7 @@ module.exports = function (signalhost, opts) {
     });
 
     return signaller;
-  }; 
+  };
 
 
   /**
@@ -768,7 +770,7 @@ module.exports = function (signalhost, opts) {
         // Add the datachannel (if required)
         addDataChannelToConnection(call.pc, peerId, label);
       }
-    });    
+    });
 
     return signaller;
   };
